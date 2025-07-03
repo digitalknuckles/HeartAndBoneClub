@@ -77,50 +77,29 @@ function createAccessModal() {
 
 async function ownsAnyApprovedNFT(address) {
   for (const { slug, chain } of allowedCollections) {
+    const url = `${openseaApi}/chain/${chain}/account/${address}/nfts?collection=${slug}`;
+
     try {
-      const url = `${openseaApi}/chain/${chain}/account/${address}/nfts?collection=${slug}`;
+      console.log(`🔍 Checking ${slug} on ${chain} for address ${address}`);
       const res = await fetch(url);
-      if (!res.ok) continue;
+      if (!res.ok) {
+        console.warn(`⚠️ Failed request to ${url} - status: ${res.status}`);
+        continue;
+      }
+
       const data = await res.json();
-      if (data.nfts && data.nfts.length > 0) return true;
-    } catch (err) {
-      console.warn(`Failed to check ${slug} on ${chain}:`, err);
-    }
-  }
-  return false;
-}
+      console.log(`📦 OpenSea ${slug} data:`, data);
 
-async function verifyWalletAccess(statusEl) {
-  try {
-    if (!window.ethereum) {
-      statusEl.textContent = "MetaMask is required to access this site.";
-      return;
-    }
-
-    statusEl.textContent = "Requesting wallet connection...";
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    const address = await signer.getAddress();
-
-    statusEl.textContent = "Checking NFT ownership...";
-    const ownsNFT = await ownsAnyApprovedNFT(address);
-
-    if (ownsNFT) {
-      const signature = await signer.signMessage(signatureMessage);
-      if (signature) {
-        sessionStorage.setItem("HB_multi_verified", "true");
+      if (data.nfts && data.nfts.length > 0) {
+        console.log(`✅ NFT found in ${slug}`);
         return true;
       }
-    } else {
-      statusEl.textContent = "You need a Heartbones or Heart & Bones NFT... Redirecting to OpenSea...";
-      setTimeout(() => {
-        window.location.href = "https://opensea.io/collection/heartbones";
-      }, 3000);
+    } catch (err) {
+      console.error(`❌ Error fetching ${slug} on ${chain}:`, err);
     }
-  } catch (err) {
-    console.error(err);
-    statusEl.textContent = "Verification failed. Try again.";
+
+    // Optional: wait 1 second before trying next collection to avoid rate-limiting
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
   return false;
