@@ -42,13 +42,18 @@
   </style>
 </head>
 
-<!--// Token-gate via (BASE + Opensea API Check)-->
+<!--// Token-gate via (Polygon or BASE + Opensea API Check)-->
 <script type="module">
 import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js";
 
 const signatureMessage = "Sign this message to verify access to Digitalknuckles Portfolio.";
-const collectionSlug = "heartbones";
 const openseaApi = "https://api.opensea.io/api/v2";
+
+// Collections to check: OpenSea slug and chain
+const allowedCollections = [
+  { slug: "heartbones", chain: "base" },
+  { slug: "heartandbones", chain: "matic" }, // Polygon
+];
 
 function createAccessModal() {
   const modal = document.createElement("div");
@@ -70,13 +75,19 @@ function createAccessModal() {
   return modal;
 }
 
-async function ownsHeartbonesNFT(address) {
-  const url = `${openseaApi}/chain/base/account/${address}/nfts?collection=${collectionSlug}`;
-  const res = await fetch(url);
-  if (!res.ok) return false;
-
-  const data = await res.json();
-  return data.nfts && data.nfts.length > 0;
+async function ownsAnyApprovedNFT(address) {
+  for (const { slug, chain } of allowedCollections) {
+    try {
+      const url = `${openseaApi}/chain/${chain}/account/${address}/nfts?collection=${slug}`;
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      if (data.nfts && data.nfts.length > 0) return true;
+    } catch (err) {
+      console.warn(`Failed to check ${slug} on ${chain}:`, err);
+    }
+  }
+  return false;
 }
 
 async function verifyWalletAccess(statusEl) {
@@ -93,18 +104,18 @@ async function verifyWalletAccess(statusEl) {
     const address = await signer.getAddress();
 
     statusEl.textContent = "Checking NFT ownership...";
-    const ownsNFT = await ownsHeartbonesNFT(address);
+    const ownsNFT = await ownsAnyApprovedNFT(address);
 
     if (ownsNFT) {
       const signature = await signer.signMessage(signatureMessage);
       if (signature) {
-        sessionStorage.setItem("HB_verified", "true");
+        sessionStorage.setItem("HB_multi_verified", "true");
         return true;
       }
     } else {
-      statusEl.textContent = "You need a Heartbones NFT... Redirecting to collection...";
+      statusEl.textContent = "You need a Heartbones or Heart & Bones NFT... Redirecting to OpenSea...";
       setTimeout(() => {
-        window.location.href = "https://opensea.io/collection/heartbones";
+        window.location.href = "https://opensea.io/collection/heartandbones";
       }, 3000);
     }
   } catch (err) {
@@ -122,7 +133,7 @@ function showSiteContent() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (sessionStorage.getItem("HB_verified") === "true") {
+  if (sessionStorage.getItem("HB_multi_verified") === "true") {
     showSiteContent();
     return;
   }
