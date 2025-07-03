@@ -1,2 +1,2 @@
-# HeartAndBoneClub
-Building an App for FunFart Games, Digitalknuckles, and LazerPixel Hub!
+# MoveToMint
+Building an App to for FunFart Games, Digitalknuckles, and LazerPixel Hub!

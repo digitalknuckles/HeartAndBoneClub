@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HB Collect!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+      height: 100%;
+      width: 100%;
+    }
+    #game-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(80vw, 400px);
+      height: min(80vw, 400px);
+      transform: translate(-50%, -50%);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    #frame {
+      position: fixed;
+      top: 70%;
+      left: 51%;
+      width: 155vw;
+      height: 150vw;
+      max-width: 1000px;
+      max-height: 1000px;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-container"></div>
+
+  <img id="frame" src="frame+.png" alt="Game Frame">
+
+  <!-- Load Phaser -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.85.2/dist/phaser.js"></script>
+
+  <!-- Load WalletConnect -->
+  <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.6.6/dist/umd/index.min.js"></script>
+
+  <!-- Load ethers.js UMD (for browser global use) -->
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+
+  <!-- Load Web3Modal -->
+  <script src="https://cdn.jsdelivr.net/npm/web3modal@1.9.7/dist/index.min.js"></script>
+
+  <!-- Load custom game and wallet connection logic -->
+  <script src="walletconnect.js"></script>
+  <script type="module" src="game.js"></script>
+
+</body>
+</html>
