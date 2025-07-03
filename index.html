@@ -76,7 +76,7 @@ function createAccessModal() {
 
 async function ownsAnyApprovedNFT(address) {
   for (const { slug, chain } of allowedCollections) {
-    const url = `https://hbverifynft.vercel.app/api/check-nfts?chain=${chain}&address=${address}&slug=${slug}`;
+    const url = `https://hb-verify-nft.vercel.app/api/check-nfts?chain=${chain}&address=${address}&slug=${slug}`;
 
     try {
       const res = await fetch(url);
