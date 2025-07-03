@@ -49,10 +49,9 @@ import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.es
 const signatureMessage = "Sign this message to verify access to Digitalknuckles Portfolio.";
 const openseaApi = "https://api.opensea.io/api/v2";
 
-// Collections to check: OpenSea slug and chain
 const allowedCollections = [
   { slug: "heartbones", chain: "base" },
-  { slug: "heartandbones", chain: "matic" }, // Polygon
+  { slug: "heartandbones", chain: "matic" },
 ];
 
 function createAccessModal() {
@@ -98,8 +97,43 @@ async function ownsAnyApprovedNFT(address) {
       console.error(`❌ Error fetching ${slug} on ${chain}:`, err);
     }
 
-    // Optional: wait 1 second before trying next collection to avoid rate-limiting
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 1000)); // prevent rate limiting
+  }
+
+  return false;
+}
+
+async function verifyWalletAccess(statusEl) {
+  try {
+    if (!window.ethereum) {
+      statusEl.textContent = "MetaMask is required to access this site.";
+      return;
+    }
+
+    statusEl.textContent = "Requesting wallet connection...";
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const address = await signer.getAddress();
+
+    statusEl.textContent = "Checking NFT ownership...";
+    const ownsNFT = await ownsAnyApprovedNFT(address);
+
+    if (ownsNFT) {
+      const signature = await signer.signMessage(signatureMessage);
+      if (signature) {
+        sessionStorage.setItem("HB_multi_verified", "true");
+        return true;
+      }
+    } else {
+      statusEl.textContent = "You need a Heartbones or Heart & Bones NFT... Redirecting to OpenSea...";
+      setTimeout(() => {
+        window.location.href = "https://opensea.io/collection/heartandbones";
+      }, 3000);
+    }
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "Verification failed. Try again.";
   }
 
   return false;
@@ -108,7 +142,7 @@ async function ownsAnyApprovedNFT(address) {
 function showSiteContent() {
   const modal = document.getElementById("wallet-modal");
   if (modal) modal.remove();
-  document.body.style.overflow = "auto"; // re-enable scrolling
+  document.body.style.overflow = "auto";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
