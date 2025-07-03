@@ -84,10 +84,11 @@ async function ownsAnyApprovedNFT(address) {
         console.warn(`⚠️ Failed request to ${url} - status: ${res.status}`);
         continue;
       }
-      const data = await res.json();
-      if (data.nfts && data.nfts.length > 0) {
-        return true;
-      }
+const data = await res.json();
+console.log(`📦 Response from proxy for ${slug}:`, data);
+if (data.nfts && data.nfts.length > 0) {
+  ownedNFTs = ownedNFTs.concat(data.nfts);
+}
     } catch (err) {
       console.error(`❌ Error fetching ${slug} on ${chain}:`, err);
     }
