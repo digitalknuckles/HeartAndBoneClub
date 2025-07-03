@@ -41,13 +41,14 @@
     }
   </style>
 </head>
+
+// Token-gate via (BASE + Opensea API Check)
 <script type="module">
 import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js";
 
-// Updated contract details
-const nftAddress = "0xc3D73e86738BA19A77fF2f073d009e721ef7ABB6"; // Heartbones ERC-721
-const nftABI = ["function balanceOf(address owner) view returns (uint256)"];
-const signatureMessage = "Sign this message to verify access to Hear & Bones Club.";
+const signatureMessage = "Sign this message to verify access to Digitalknuckles Portfolio.";
+const collectionSlug = "heartbones";
+const openseaApi = "https://api.opensea.io/api/v2";
 
 function createAccessModal() {
   const modal = document.createElement("div");
@@ -69,6 +70,15 @@ function createAccessModal() {
   return modal;
 }
 
+async function ownsHeartbonesNFT(address) {
+  const url = `${openseaApi}/chain/base/account/${address}/nfts?collection=${collectionSlug}`;
+  const res = await fetch(url);
+  if (!res.ok) return false;
+
+  const data = await res.json();
+  return data.nfts && data.nfts.length > 0;
+}
+
 async function verifyWalletAccess(statusEl) {
   try {
     if (!window.ethereum) {
@@ -80,13 +90,12 @@ async function verifyWalletAccess(statusEl) {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
     const signer = provider.getSigner();
-    const userAddress = await signer.getAddress();
+    const address = await signer.getAddress();
 
     statusEl.textContent = "Checking NFT ownership...";
-    const contract = new ethers.Contract(nftAddress, nftABI, provider);
-    const balance = await contract.balanceOf(userAddress);
+    const ownsNFT = await ownsHeartbonesNFT(address);
 
-    if (balance.toNumber() > 0) {
+    if (ownsNFT) {
       const signature = await signer.signMessage(signatureMessage);
       if (signature) {
         sessionStorage.setItem("HB_verified", "true");
@@ -118,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  document.body.style.overflow = "hidden"; // lock scroll
+  document.body.style.overflow = "hidden";
   const modal = createAccessModal();
 
   const connectBtn = document.getElementById("modal-connect");
