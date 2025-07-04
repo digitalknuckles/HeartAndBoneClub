@@ -238,39 +238,6 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
 
   player.anims.play('idle');
 
-   // Initialize bgMusic:
-  bgMusic = this.sound.add('bgMusic', { loop: true, volume: 0.4 });
-
-  // Attempt to autoplay music if already verified
-  if (sessionStorage.getItem("HB_multi_verified") === "true") {
-    const resumeAudio = () => {
-      bgMusic.play().then(() => {
-        document.removeEventListener("click", resumeAudio);
-        document.removeEventListener("keydown", resumeAudio);
-      }).catch(e => {
-        console.warn("🔇 Still blocked:", e);
-      });
-    };
-    document.addEventListener("click", resumeAudio);
-    document.addEventListener("keydown", resumeAudio);
-  }
-
-  // Mute toggle button logic
-  const toggleBtn = document.getElementById("music-toggle");
-  if (toggleBtn) {
-    toggleBtn.textContent = "🔊 Mute"; // initial state
-    toggleBtn.addEventListener("click", () => {
-      if (!bgMusic) return;
-      if (bgMusic.mute) {
-        bgMusic.mute = false;
-        toggleBtn.textContent = "🔊 Mute";
-      } else {
-        bgMusic.mute = true;
-        toggleBtn.textContent = "🔈 Unmute";
-      }
-    });
-  }
-  
   // ✅ Function to avoid bedProp area when spawning items
   const safeSpawn = (x, y) => {
     const bedZone = new Phaser.Geom.Rectangle(bedProp.x, bedProp.y, bedProp.displayWidth, bedProp.displayHeight);
@@ -310,6 +277,38 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     targetPosition = new Phaser.Math.Vector2(pointer.x, pointer.y);
   });
 }
+   // Initialize bgMusic:
+ bgMusic = this.sound.add('bgMusic', { loop: true, volume: 0.4 });
+
+  // Attempt to autoplay music if already verified
+  if (sessionStorage.getItem("HB_multi_verified") === "true") {
+    const resumeAudio = () => {
+      bgMusic.play().then(() => {
+        document.removeEventListener("click", resumeAudio);
+        document.removeEventListener("keydown", resumeAudio);
+      }).catch(e => {
+        console.warn("🔇 Still blocked:", e);
+      });
+    };
+    document.addEventListener("click", resumeAudio);
+    document.addEventListener("keydown", resumeAudio);
+  }
+
+  // Mute toggle button logic
+  const toggleBtn = document.getElementById("music-toggle");
+  if (toggleBtn) {
+    toggleBtn.textContent = "🔊 Mute"; // initial state
+    toggleBtn.addEventListener("click", () => {
+      if (!bgMusic) return;
+      if (bgMusic.mute) {
+        bgMusic.mute = false;
+        toggleBtn.textContent = "🔊 Mute";
+      } else {
+        bgMusic.mute = true;
+        toggleBtn.textContent = "🔈 Unmute";
+      }
+    });
+  }
 
 function update(time, delta) {
   player.setVelocity(0);
