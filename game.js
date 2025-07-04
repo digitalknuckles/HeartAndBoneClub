@@ -70,6 +70,7 @@ function preload() {
   this.load.image('plant', 'plant.png');
   this.load.image('rug2', 'rug2.png');
   this.load.image('laptop1', 'LaptopDesk.png');
+  this.load.audio('bgMusic', 'assets/audio/coin-up.mp3');
   
   const graphics = this.add.graphics();
   graphics.fillStyle(0x00ff00, 1).fillRect(0, 0, 16, 16); // Only green icon
@@ -99,37 +100,7 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     .setDisplaySize(50, 72);
   tenk1.body.setSize(50, 50);
   tenk1.body.setOffset(0, 0);
- //MP3 audio 
-if (bgMusic && sessionStorage.getItem("HB_multi_verified") === "true") {
-  bgMusic.volume = 0.4;
 
-  const resumeAudio = () => {
-    bgMusic.play().then(() => {
-      document.removeEventListener("click", resumeAudio);
-      document.removeEventListener("keydown", resumeAudio);
-    }).catch(e => {
-      console.warn("🔇 Still blocked:", e);
-    });
-  };
-
-  // Wait for a real user gesture
-  document.addEventListener("click", resumeAudio);
-  document.addEventListener("keydown", resumeAudio);
-}
-  //MP3 audio toggle
-  const toggleBtn = document.getElementById("music-toggle");
-if (toggleBtn) {
-  toggleBtn.addEventListener("click", () => {
-    if (!bgMusic) return;
-    if (bgMusic.muted) {
-      bgMusic.muted = false;
-      toggleBtn.textContent = "🔊 Mute";
-    } else {
-      bgMusic.muted = true;
-      toggleBtn.textContent = "🔈 Unmute";
-    }
-  });
-}
    // this.physics.add.collider(player, 10k1);
   console.log(tenk1.body);
     this.anims.create({
@@ -267,6 +238,39 @@ if (toggleBtn) {
 
   player.anims.play('idle');
 
+   // Initialize bgMusic:
+  bgMusic = this.sound.add('bgMusic', { loop: true, volume: 0.4 });
+
+  // Attempt to autoplay music if already verified
+  if (sessionStorage.getItem("HB_multi_verified") === "true") {
+    const resumeAudio = () => {
+      bgMusic.play().then(() => {
+        document.removeEventListener("click", resumeAudio);
+        document.removeEventListener("keydown", resumeAudio);
+      }).catch(e => {
+        console.warn("🔇 Still blocked:", e);
+      });
+    };
+    document.addEventListener("click", resumeAudio);
+    document.addEventListener("keydown", resumeAudio);
+  }
+
+  // Mute toggle button logic
+  const toggleBtn = document.getElementById("music-toggle");
+  if (toggleBtn) {
+    toggleBtn.textContent = "🔊 Mute"; // initial state
+    toggleBtn.addEventListener("click", () => {
+      if (!bgMusic) return;
+      if (bgMusic.mute) {
+        bgMusic.mute = false;
+        toggleBtn.textContent = "🔊 Mute";
+      } else {
+        bgMusic.mute = true;
+        toggleBtn.textContent = "🔈 Unmute";
+      }
+    });
+  }
+  
   // ✅ Function to avoid bedProp area when spawning items
   const safeSpawn = (x, y) => {
     const bedZone = new Phaser.Geom.Rectangle(bedProp.x, bedProp.y, bedProp.displayWidth, bedProp.displayHeight);
