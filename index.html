@@ -39,12 +39,6 @@
       pointer-events: none;
       z-index: 999;
     }
-    <button id="music-toggle" style="
-      position: absolute; top: 10px; right: 10px; z-index: 10000;
-      padding: 6px 12px; font-size: 0.9rem;
-      background: #222; color: #fff; border: 1px solid #fff; border-radius: 6px;
-      cursor: pointer;
-    ">🔊 Mute</button>
       </style>
     </head>
 
@@ -128,7 +122,7 @@ async function verifyWalletAccess(statusEl) {
 
     statusEl.textContent = "Checking NFT ownership...";
     const ownsNFT = await ownsAnyApprovedNFT(address);
-
+///////////////////////////////////////////////////////////////
     if (ownsNFT) {
       const signature = await signer.signMessage(signatureMessage);
       if (signature) {
@@ -216,7 +210,12 @@ if (signature) {
 });
 </script>
 <body>
-
+    <button id="music-toggle" style="
+      position: absolute; top: 10px; right: 10px; z-index: 10000;
+      padding: 6px 12px; font-size: 0.9rem;
+      background: #222; color: #fff; border: 1px solid #fff; border-radius: 6px;
+      cursor: pointer;
+    ">🔊 Mute</button>
   <div id="game-container"></div>
 
   <img id="frame" src="frame+.png" alt="Game Frame">
@@ -237,18 +236,20 @@ if (signature) {
   <script src="walletconnect.js"></script>
   <script type="module" src="game.js"></script>
 <!--<audio id="unlock-music" src="assets/audio/coin-up.mp3" preload="auto"></audio>-->
-<audio id="bg-music" src="public/assets/audio/coin-up.mp3" preload="auto" loop></audio>
+<audio id="bg-music" src="assets/audio/coin-up.mp3" preload="auto" loop></audio>
+  <footer style="color:gray; text-align: center; padding: 1rem;">
+  &copy; FunFart Games. All rights reserved.  
+  <br/>
+  <small>
+    Sound Effect by 
+    <a href="https://pixabay.com/users/bobbeats-48369126/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
+      Xavier Reed
+    </a> 
+    from 
+    <a href="https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
+      Pixabay
+    </a>
+  </small>
+</footer>
 </body>
-
-  <Footer>&copy;FunFart Games. All rights reserved.  </body>
-  <small style="color:gray; display:block; text-align: center; margin-top: 1rem;">
-  Sound Effect by 
-  <a href="https://pixabay.com/users/bobbeats-48369126/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
-    Xavier Reed
-  </a> 
-  from 
-  <a href="https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
-    Pixabay
-  </a>
-</small></Footer>
 </html>
