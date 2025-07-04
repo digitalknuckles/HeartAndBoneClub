@@ -19,7 +19,7 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
-
+let bgMusic = null;
 let player;
 let items;
 let background;
@@ -99,7 +99,13 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     .setDisplaySize(50, 72);
   tenk1.body.setSize(50, 50);
   tenk1.body.setOffset(0, 0);
-
+  
+bgMusic = document.getElementById("bg-music");
+if (bgMusic && sessionStorage.getItem("HB_multi_verified") === "true") {
+  bgMusic.volume = 0.4;
+  bgMusic.play().catch(e => console.warn("🔇 Autoplay blocked", e));
+}
+  
    // this.physics.add.collider(player, 10k1);
   console.log(tenk1.body);
     this.anims.create({
