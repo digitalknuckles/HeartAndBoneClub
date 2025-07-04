@@ -122,7 +122,7 @@ async function verifyWalletAccess(statusEl) {
 
     statusEl.textContent = "Checking NFT ownership...";
     const ownsNFT = await ownsAnyApprovedNFT(address);
-///////////////////////////////////////////////////////////////
+
     if (ownsNFT) {
       const signature = await signer.signMessage(signatureMessage);
       if (signature) {
