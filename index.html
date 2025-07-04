@@ -187,7 +187,17 @@ document.addEventListener("DOMContentLoaded", () => {
     showSiteContent();
     return;
   }
+if (signature) {
+  sessionStorage.setItem("HB_multi_verified", "true");
+  
+  // 🔊 Play sound effect
+  const music = document.getElementById("unlock-sfx");
+  if (music) {
+    music.play().catch(e => console.warn("🔇 Autoplay blocked", e));
+  }
 
+  return true;
+}
   document.body.style.overflow = "hidden";
   const modal = createAccessModal();
   const connectBtn = document.getElementById("modal-connect");
@@ -220,6 +230,18 @@ document.addEventListener("DOMContentLoaded", () => {
   <!-- Load custom game and wallet connection logic -->
   <script src="walletconnect.js"></script>
   <script type="module" src="game.js"></script>
-<audio id="unlock-music" src="assets/audio/coin-up.mp3" preload="auto"></audio>
+<!--<audio id="unlock-music" src="assets/audio/coin-up.mp3" preload="auto"></audio>-->
+<audio id="bg-music" src="assets/audio/coin-up.mp3" preload="auto" loop></audio>
 </body>
+  <small style="color:gray; display:block; text-align: center; margin-top: 1rem;">
+  Sound Effect by 
+  <a href="https://pixabay.com/users/bobbeats-48369126/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
+    Xavier Reed
+  </a> 
+  from 
+  <a href="https://pixabay.com/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=290770" target="_blank" rel="noopener noreferrer">
+    Pixabay
+  </a>
+</small>
+  <Footer>&copy;FunFart Games. All rights reserved.  </Footer>
 </html>
