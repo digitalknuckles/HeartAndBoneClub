@@ -46,13 +46,14 @@
 <script type="module">
 import { ethers } from "https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.esm.min.js";
 
-const signatureMessage = "Sign this message to verify access to Digitalknuckles Portfolio.";
-const openseaApi = "https://api.opensea.io/api/v2";
+const signatureMessage = "Sign this message to verify access to Interactive Mint.";
 
 const allowedCollections = [
   { slug: "heartbones", chain: "base" },
   { slug: "heartandbones", chain: "matic" },
 ];
+
+const allowedTokenIds = null; // e.g., [1, 2, 42] or null to allow any
 
 function createAccessModal() {
   const modal = document.createElement("div");
@@ -63,13 +64,11 @@ function createAccessModal() {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-family: sans-serif; text-align: center;
   `;
-
   modal.innerHTML = `
     <h2>Verify NFT Access</h2>
     <p id="modal-status">Connect your wallet to continue.</p>
     <button id="modal-connect" style="padding: 10px 20px; font-size: 1rem; margin-top: 1rem;">Connect Wallet</button>
   `;
-
   document.body.appendChild(modal);
   return modal;
 }
@@ -79,29 +78,33 @@ async function ownsAnyApprovedNFT(address) {
 
   for (const { slug, chain } of allowedCollections) {
     const url = `https://hb-verify-nft.vercel.app/api/check-nfts?chain=${chain}&address=${address}&slug=${slug}`;
-
     try {
       const res = await fetch(url);
       if (!res.ok) {
         console.warn(`⚠️ Failed request to ${url} - status: ${res.status}`);
         continue;
       }
-
       const data = await res.json();
-      console.log(`📦 Response from proxy for ${slug}:`, data);
-
       if (data.nfts && data.nfts.length > 0) {
-        ownedNFTs = ownedNFTs.concat(data.nfts);
+        for (const nft of data.nfts) {
+          const tokenId = parseInt(nft.identifier || nft.token_id || "0");
+          if (!allowedTokenIds || allowedTokenIds.includes(tokenId)) {
+            ownedNFTs.push(nft);
+          }
+        }
       }
-
     } catch (err) {
       console.error(`❌ Error fetching ${slug} on ${chain}:`, err);
     }
-
-    await new Promise((r) => setTimeout(r, 1000)); // rate limit protection
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
-  return ownedNFTs.length > 0;
+  if (ownedNFTs.length > 0) {
+    sessionStorage.setItem("HB_nfts", JSON.stringify(ownedNFTs));
+    return true;
+  }
+
+  return false;
 }
 
 async function verifyWalletAccess(statusEl) {
@@ -129,7 +132,7 @@ async function verifyWalletAccess(statusEl) {
     } else {
       statusEl.textContent = "You need a Heartbones or Heart & Bones NFT... Redirecting to OpenSea...";
       setTimeout(() => {
-        window.location.href = "https://opensea.io/collection/heartbones";
+        window.location.href = "https://opensea.io/collection/heartandbones";
       }, 3000);
     }
   } catch (err) {
@@ -140,10 +143,43 @@ async function verifyWalletAccess(statusEl) {
   return false;
 }
 
+function displayOwnedNFTs() {
+  const raw = sessionStorage.getItem("HB_nfts");
+  if (!raw) return;
+
+  const nfts = JSON.parse(raw);
+  if (nfts.length === 0) return;
+
+  const container = document.createElement("div");
+  container.style = "display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin-top: 2rem;";
+
+  nfts.forEach((nft) => {
+    const card = document.createElement("div");
+    card.style = "width: 150px; color: white; text-align: center;";
+    card.innerHTML = `
+      <img src="${nft.image_url}" alt="${nft.name}" style="width:100%; border-radius: 10px;" />
+      <div style="margin-top: 0.5rem;">${nft.name || "NFT"}</div>
+    `;
+    container.appendChild(card);
+  });
+
+  document.body.appendChild(container);
+}
+
 function showSiteContent() {
   const modal = document.getElementById("wallet-modal");
   if (modal) modal.remove();
   document.body.style.overflow = "auto";
+
+  // ✅ Display owned NFTs
+  displayOwnedNFTs();
+
+  // ✅ Auto-unlock iframe or content (if present)
+  const iframe = document.querySelector("iframe[data-token-gated]");
+  if (iframe) iframe.style.display = "block";
+
+  const unlockSection = document.getElementById("gated-content");
+  if (unlockSection) unlockSection.style.display = "block";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -154,7 +190,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.body.style.overflow = "hidden";
   const modal = createAccessModal();
-
   const connectBtn = document.getElementById("modal-connect");
   const statusEl = document.getElementById("modal-status");
 
