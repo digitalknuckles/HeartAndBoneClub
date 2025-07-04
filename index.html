@@ -185,19 +185,17 @@ function showSiteContent() {
 document.addEventListener("DOMContentLoaded", () => {
   if (sessionStorage.getItem("HB_multi_verified") === "true") {
     showSiteContent();
+
+    // 🔊 Play sound effect only after wallet verified
+    const music = document.getElementById("bg-music");
+    if (music) {
+      document.addEventListener("click", () => music.play().catch(() => {}), { once: true });
+    }
+
     return;
   }
-//if (signature) {
-  //sessionStorage.setItem("HB_multi_verified", "true");
-  
-  // 🔊 Play sound effect
-  const music = document.getElementById("unlock-sfx");
-  if (music) {
-    music.play().catch(e => console.warn("🔇 Autoplay blocked", e));
-  }
 
-  return true;
-}
+  // 🔒 Not verified, show modal
   document.body.style.overflow = "hidden";
   const modal = createAccessModal();
   const connectBtn = document.getElementById("modal-connect");
@@ -205,7 +203,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   connectBtn.addEventListener("click", async () => {
     const verified = await verifyWalletAccess(statusEl);
-    if (verified) showSiteContent();
+    if (verified) {
+      showSiteContent();
+
+      // ✅ Start sound once verified and clicked
+      const music = document.getElementById("bg-music");
+      if (music) {
+        music.play().catch(() => {
+          document.addEventListener("click", () => music.play().catch(() => {}), { once: true });
+        });
+      }
+    }
   });
 });
 </script>
