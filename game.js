@@ -100,10 +100,21 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
   tenk1.body.setSize(50, 50);
   tenk1.body.setOffset(0, 0);
  //MP3 audio 
-bgMusic = document.getElementById("bg-music");
 if (bgMusic && sessionStorage.getItem("HB_multi_verified") === "true") {
   bgMusic.volume = 0.4;
-  bgMusic.play().catch(e => console.warn("🔇 Autoplay blocked", e));
+
+  const resumeAudio = () => {
+    bgMusic.play().then(() => {
+      document.removeEventListener("click", resumeAudio);
+      document.removeEventListener("keydown", resumeAudio);
+    }).catch(e => {
+      console.warn("🔇 Still blocked:", e);
+    });
+  };
+
+  // Wait for a real user gesture
+  document.addEventListener("click", resumeAudio);
+  document.addEventListener("keydown", resumeAudio);
 }
   //MP3 audio toggle
   const toggleBtn = document.getElementById("music-toggle");
