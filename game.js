@@ -294,21 +294,24 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     document.addEventListener("keydown", resumeAudio);
   }
 
-  // Mute toggle button logic
-  const toggleBtn = document.getElementById("music-toggle");
-  if (toggleBtn) {
-    toggleBtn.textContent = "🔊 Mute"; // initial state
-    toggleBtn.addEventListener("click", () => {
-      if (!bgMusic) return;
-      if (bgMusic.mute) {
-        bgMusic.mute = false;
-        toggleBtn.textContent = "🔊 Mute";
-      } else {
-        bgMusic.mute = true;
-        toggleBtn.textContent = "🔈 Unmute";
-      }
-    });
-  }
+ // Mute toggle button logic
+const toggleBtn = document.getElementById("music-toggle");
+const music = document.getElementById("bg-music");
+
+if (toggleBtn && music) {
+  toggleBtn.textContent = "🔊 Mute"; // initial state
+
+  toggleBtn.addEventListener("click", () => {
+    if (music.paused || music.muted) {
+      music.muted = false;
+      music.play().catch(() => {});
+      toggleBtn.textContent = "🔊 Mute";
+    } else {
+      music.pause();
+      toggleBtn.textContent = "🔈 Unmute";
+    }
+  });
+}
 
 function update(time, delta) {
   player.setVelocity(0);
