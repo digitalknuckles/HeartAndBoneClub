@@ -122,10 +122,10 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
 
   tenk1.anims.play('tenk1_anim');
 
-    punk = this.physics.add.sprite(150, 50, 'Punk1')
+    punk = this.physics.add.sprite(200, 25, 'Punk1')
     .setImmovable(true)
     .setOrigin(0, 0)
-    .setDisplaySize(40, 100);
+    .setDisplaySize(40, 80);
   punk.body.setSize(50, 50);
   punk.body.setOffset(0, 0);
 
@@ -426,6 +426,7 @@ function collectItem(player, item) {
     });
   }
 }
+
 
 
 
