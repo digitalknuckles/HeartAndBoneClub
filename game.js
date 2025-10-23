@@ -281,8 +281,9 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     const tenk1Zone = new Phaser.Geom.Rectangle(tenk1.x, tenk1.y, tenk1.displayWidth, tenk1.displayHeight);
     const tenkZone = new Phaser.Geom.Rectangle(tenk.x, tenk.y, tenk.displayWidth, tenk.displayHeight);
     const punkZone = new Phaser.Geom.Rectangle(punk.x, punk.y, punk.displayWidth, punk.displayHeight);
+    const punk1Zone = new Phaser.Geom.Rectangle(punk1.x, punk1.y, punk1.displayWidth, punk1.displayHeight);
     const laptopZone = new Phaser.Geom.Rectangle(laptop.x, laptop.y, laptop.displayWidth, laptop.displayHeight);
-    return !bedZone.contains(x, y) && !goldyZone.contains(x, y)  && !laptopZone.contains(x, y) && !tenk1Zone.contains(x, y) && !tenkZone.contains(x, y);
+    return !bedZone.contains(x, y) && !goldyZone.contains(x, y)  && !laptopZone.contains(x, y) && !tenk1Zone.contains(x, y) && !tenkZone.contains(x, y) && !punk1Zone.contains(x, y) && !punkZone.contains(x, y);
   };
 
   // ✅ Spawn items in safe positions
@@ -427,6 +428,7 @@ function collectItem(player, item) {
     });
   }
 }
+
 
 
 
