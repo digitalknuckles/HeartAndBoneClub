@@ -132,7 +132,7 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
    // this.physics.add.collider(player, Punk1);
   console.log(punk.body);
     this.anims.create({
-    key: 'tenk1_anim',
+    key: 'Punk1_anim',
     frames: [
       { key: 'Punk1' },
       { key: 'Punk2' },
@@ -143,7 +143,7 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
     repeat: -1
   });
 
-  punk.anims.play('tenk1_anim');
+  punk.anims.play('Punk1_anim');
 
   goldy = this.physics.add.sprite(100, -120, 'goldy1')
     .setImmovable(true)
@@ -419,4 +419,5 @@ function collectItem(player, item) {
     });
   }
 }
+
 
