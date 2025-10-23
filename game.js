@@ -26,6 +26,7 @@ let background;
 let collectedIcons = [];
 let targetPosition = null;
 let tenk1;
+let punk;
 let tenk;
 let goldy; 
 let laptop; 
@@ -42,6 +43,10 @@ function preload() {
   this.load.image('10k2', '10k2.png');
   this.load.image('10k3', '10k3.png');
   this.load.image('10k4', '10k4.png');
+  this.load.image('Punk1', 'Punk1.png');
+  this.load.image('Punk2', 'Punk2.png');
+  this.load.image('Punk3', 'Punk3.png');
+  this.load.image('Punk4', 'Punk4.png');
   this.load.image('whimp1', 'whimp1.png');
   this.load.image('whimp2', 'whimp2.png');
   this.load.image('goldy1', 'goldy1.png');
@@ -116,6 +121,29 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
   });
 
   tenk1.anims.play('tenk1_anim');
+
+    punk = this.physics.add.sprite(72, 100, 'Punk1')
+    .setImmovable(true)
+    .setOrigin(0, 0)
+    .setDisplaySize(50, 72);
+  punk.body.setSize(50, 50);
+  punk.body.setOffset(0, 0);
+
+   // this.physics.add.collider(player, Punk1);
+  console.log(punk.body);
+    this.anims.create({
+    key: 'tenk1_anim',
+    frames: [
+      { key: 'Punk1' },
+      { key: 'Punk2' },
+      { key: 'Punk3' },
+      { key: 'Punk4' }
+    ],
+    frameRate: 5,
+    repeat: -1
+  });
+
+  punk.anims.play('tenk1_anim');
 
   goldy = this.physics.add.sprite(100, -120, 'goldy1')
     .setImmovable(true)
@@ -242,8 +270,9 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
   const safeSpawn = (x, y) => {
     const bedZone = new Phaser.Geom.Rectangle(bedProp.x, bedProp.y, bedProp.displayWidth, bedProp.displayHeight);
     const goldyZone = new Phaser.Geom.Rectangle(goldy.x, goldy.y, goldy.displayWidth, goldy.displayHeight);
-     const tenk1Zone = new Phaser.Geom.Rectangle(tenk1.x, tenk1.y, tenk1.displayWidth, tenk1.displayHeight);
+    const tenk1Zone = new Phaser.Geom.Rectangle(tenk1.x, tenk1.y, tenk1.displayWidth, tenk1.displayHeight);
     const tenkZone = new Phaser.Geom.Rectangle(tenk.x, tenk.y, tenk.displayWidth, tenk.displayHeight);
+    const punkZone = new Phaser.Geom.Rectangle(punk.x, punk.y, punk.displayWidth, punk.displayHeight);
     const laptopZone = new Phaser.Geom.Rectangle(laptop.x, laptop.y, laptop.displayWidth, laptop.displayHeight);
     return !bedZone.contains(x, y) && !goldyZone.contains(x, y)  && !laptopZone.contains(x, y) && !tenk1Zone.contains(x, y) && !tenkZone.contains(x, y);
   };
@@ -390,3 +419,4 @@ function collectItem(player, item) {
     });
   }
 }
+
