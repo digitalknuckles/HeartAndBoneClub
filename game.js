@@ -244,12 +244,12 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
   tenk.body.setSize(36, 36).setOffset(0, 0);
   this.physics.add.collider(player, tenk);
 
-      const punk = this.physics.add.sprite(300, 300, 'wall2')
-    .setImmovable(true)
-    .setOrigin(0, 0)
-    .setDisplaySize(50, 50);
-  punk.body.setSize(36, 36).setOffset(0, 0);
-  this.physics.add.collider(player, punk);
+   //   const punk = this.physics.add.sprite(300, 300, 'wall2')
+  //  .setImmovable(true)
+   // .setOrigin(0, 0)
+ //   .setDisplaySize(50, 50);
+//  punk.body.setSize(36, 36).setOffset(0, 0);
+//  this.physics.add.collider(player, punk);
 
 
   // ✅ Setup manual animation for Goldy
@@ -426,6 +426,7 @@ function collectItem(player, item) {
     });
   }
 }
+
 
 
 
