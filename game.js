@@ -122,7 +122,7 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
 
   tenk1.anims.play('tenk1_anim');
 
-    punk = this.physics.add.sprite(200, 25, 'Punk1')
+    punk = this.physics.add.sprite(300, 200, 'Punk1')
     .setImmovable(true)
     .setOrigin(0, 0)
     .setDisplaySize(40, 80);
@@ -244,7 +244,7 @@ const rug2 = this.physics.add.sprite(225, 200, 'rug2')
   tenk.body.setSize(36, 36).setOffset(0, 0);
   this.physics.add.collider(player, tenk);
 
-      const punk = this.physics.add.sprite(50, 75, 'wall2')
+      const punk = this.physics.add.sprite(300, 200, 'wall2')
     .setImmovable(true)
     .setOrigin(0, 0)
     .setDisplaySize(50, 50);
@@ -426,6 +426,7 @@ function collectItem(player, item) {
     });
   }
 }
+
 
 
 
