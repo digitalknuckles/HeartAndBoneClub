@@ -76,7 +76,7 @@ function preload() {
   this.load.image('plant', 'plant.png');
   this.load.image('rug2', 'rug2.png');
   this.load.image('laptop1', 'LaptopDesk.png');
-  this.load.audio('bgMusic', 'assets/public_assets_audio_coin-up.mp3');
+  this.load.audio('bgMusic', 'coin-up.mp3');
   
   const graphics = this.add.graphics();
   graphics.fillStyle(0x00ff00, 1).fillRect(0, 0, 16, 16); // Only green icon
