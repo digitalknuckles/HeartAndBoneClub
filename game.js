@@ -76,7 +76,7 @@ function preload() {
   this.load.image('plant', 'plant.png');
   this.load.image('rug2', 'rug2.png');
   this.load.image('laptop1', 'LaptopDesk.png');
-  this.load.audio('bgMusic', 'assets/audio/coin-up.mp3');
+  this.load.audio('bgMusic', 'https://magenta-broad-orca-873.mypinata.cloud/ipfs/bafybeidle5elbs6f7b7cpyv6x56bdekpatx2ffyp7n6qcorfyh3y3cslp4');
   
   const graphics = this.add.graphics();
   graphics.fillStyle(0x00ff00, 1).fillRect(0, 0, 16, 16); // Only green icon
